@@ -1,23 +1,36 @@
 #!/usr/bin/env python3
 import typer
 from pydantic import BaseModel, field_validator, ValidationError    # Base class for data models with validation, decorator for checks, and error type
+from llm_api import ask_openai                                      # Import API call function
 
-class NameModel(BaseModel):                                         # NameModel class inherits from BaseModel
-    name: str                                                       # properties name, type string
+class PromptModel(BaseModel):                                       # NameModel class inherits from BaseModel
+    prompt: str;                                                    # properties name, type string
 
-    @field_validator("name")                                        # declare custom validation for name
+    @field_validator("prompt")                                      # declare custom validation for name
     def not_empty(cls, value: str) -> str:                          # class and string as inputs
         if not value or value.strip() == "":
-            raise ValueError("Name must not be empty.")
+            raise ValueError("Prompt must not be empty.")
         return value
 
-def main(name: str) -> None:
+app = typer.Typer()
+
+@app.command()
+def main(prompt: str) -> None:
+    # Validate input
     try:
-        data = NameModel(name=name)
-        print(f"Hello, {data.name}!")
+        data = PromptModel(prompt=prompt)
+        print(f"Hello, {data.prompt}!")
     except ValidationError as exc:
-        typer.echo(f"Error: {exc}", err=True)
+        typer.echo(f"Input Validation Error: {exc}", err=True)
+        raise typer.Exit(code=1)
+
+    # Call your OpenAI API function
+    try:
+        reponse = ask_openai(data.prompt)
+        print(response)
+    except Exception as e:
+        typer.echo(f"OpenAI API error: {e}", err=True)
         raise typer.Exit(code=1)
 
 if __name__ == "__main__":
-    typer.run(main)
+    app()
