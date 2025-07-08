@@ -1,0 +1,55 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directory
+venv/
+
+# VSCode settings folder
+.vscode/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# pyenv (if used)
+.python-version
+
+# mypy type checker
+.mypy_cache/
+
+# VSCode Python extension caches
+.vscode-test/
+
+# macOS files
+.DS_Store
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Optional: Environment variable files
+.env
+.env.*
+
+# PyCharm folder, if ever used
+.idea/
