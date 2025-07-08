@@ -3,8 +3,8 @@ import typer
 from pydantic import BaseModel, field_validator, ValidationError    # Base class for data models with validation, decorator for checks, and error type
 from llm_api import ask_openai                                      # Import API call function
 
-class PromptModel(BaseModel):                                       # NameModel class inherits from BaseModel
-    prompt: str;                                                    # properties name, type string
+class PromptModel(BaseModel):                                       # PromptModel class inherits from BaseModel
+    prompt: str;                                                    # properties prompt, type string
 
     @field_validator("prompt")                                      # declare custom validation for name
     def not_empty(cls, value: str) -> str:                          # class and string as inputs
@@ -19,14 +19,14 @@ def main(prompt: str) -> None:
     # Validate input
     try:
         data = PromptModel(prompt=prompt)
-        print(f"Hello, {data.prompt}!")
+        print(f"Made PromptModel with prompt: {data.prompt}")
     except ValidationError as exc:
         typer.echo(f"Input Validation Error: {exc}", err=True)
         raise typer.Exit(code=1)
 
     # Call your OpenAI API function
     try:
-        reponse = ask_openai(data.prompt)
+        response = ask_openai(data.prompt)
         print(response)
     except Exception as e:
         typer.echo(f"OpenAI API error: {e}", err=True)
