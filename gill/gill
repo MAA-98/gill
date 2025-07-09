@@ -1,82 +1,92 @@
 #!/usr/bin/env python3
 import sys
-from pydantic import BaseModel, field_validator, ValidationError    # Base class for data models with validation, decorator for checks, and error type
+from typing import List
+from pydantic import BaseModel, field_validator                     # Base class for data models with validation, decorator for checks, and error type
 from llm_api import ask_openai                                      # Import API call function
 
-class PromptModel(BaseModel):                                       # PromptModel class inherits from BaseModel
-    prompt: str;                                                    # properties prompt, type string
+class ParserModel(BaseModel):                                       # PromptModel class inherits from BaseModel
+    messageFlag: bool = False
+    filenameFlag: bool = False
 
-    @field_validator("prompt")                                      # declare custom validation for name
-    def not_empty(cls, value: str) -> str:                          # class and string as inputs
-        if not value or value.strip() == "":
-            raise ValueError("Prompt must not be empty.")
+    # @field_validator("prompt")                                      # declare custom validation for name
+    # def not_empty(cls, value: str) -> str:                          # class and string as inputs
+    #     if not value or value.strip() == "":
+    #         raise ValueError("Prompt must not be empty.")
+    #     return value
+    
+    @field_validator("messageFlag", "filenameFlag")
+    def flag_must_be_bool(cls, value):
+        if not isinstance(value, bool):
+            raise ValueError("Flags must be boolean")
         return value
 
-def parse_args_in_order(argv):
+def parse_ordered_args(args) -> List[str]:
     """
     Parse argv manually to support interleaved -m/--message and -f/--file flags,
     preserving their order in the input.
-    Returns list of tuples: (kind, value), where kind is 'm' or 'f'.
     """
-    args = argv[1:]                                                 # Cut out the gill command
+    parser = ParserModel()
     i = 0
-    parsed = []
+    prompts: List[str] = []
     while i < len(args):
-        if args[i] in ("-m", "--message"):
-            if i + 1 >= len(args):
-                raise ValueError(f"Expected message string after {args[i]}")
-            parsed.append(("m", args[i + 1]))
-            i += 2
-        elif args[i] in ("-f", "--file"):
-            if i + 1 >= len(args):
-                raise ValueError(f"Expected filename after {args[i]}")
-            parsed.append(("f", args[i + 1]))
-            i += 2
-        else:
-            raise ValueError(f"Unexpected argument {args[i]}")
-    return parsed
-
-def main() -> None:
-    try:
-        parsed = parse_args_in_order(sys.argv)
-    except ValueError as e:
-        print(f"Argument error: {e}", err=True) # type: ignore
-        raise sys.exit(1)
-
-    if not parsed:
-        print("Error: Provide at least one -m or -f option.", err=True) # type: ignore
-        raise sys.exit(1)
-
-    prompts = []
-    for kind, val in parsed:
-        if kind == "m":
-            prompts.append(val)
-        else:  # kind == "f"
+        arg = args[i]
+        if arg in ("-m", "--message"):
+            parser.messageFlag = True                           # There's no ablity to use filenames "-m" or "-message"
+            parser.filenameFlag = False
+        elif arg in ("-f", "--file"):                           # There's no ablity to write a message with just -f or -file, or such filename
+            parser.messageFlag = False
+            parser.filenameFlag = True
+        elif parser.messageFlag:
+            prompts.append(arg)
+        elif parser.filenameFlag:
             try:
-                with open(val, "r") as f:
+                with open(arg, "r") as f:
                     content = f.read()
                     prompts.append(content)
             except OSError as e:
-                print(f"Failed reading file {val}: {e}", err=True) # type: ignore
+                print(f"Failed reading file {arg}: {e}", file=sys.stderr)
                 raise sys.exit(1)
+        else:                                                   # Comes when no message or filename flags have been made
+            raise ValueError(f"Unexpected argument {args[i]}")
+        i += 1
+    return prompts
+
+def main() -> None:
+    testBool: bool = False
+    args = sys.argv[1:]                                             # Cut out the gill command
+
+    print(f"args are: ", args)
+
+    if args[0] == "--test":
+        testBool = True
+        args = args[1:]
+
+    print(f"args, testBool are ", args, testBool)
+
+    try:
+        prompts = parse_ordered_args(args)
+        print("Prompts are: ", prompts)
+    except ValueError as e:
+        print(f"Argument error: {e}", file=sys.stderr)
+        raise sys.exit(1)
+
+    if not prompts:
+        print("Error: Provide at least one -m or -f option.", file=sys.stderr)
+        raise sys.exit(1)
 
     # Concatenate all prompts with some delimiter (e.g., two newlines)
     combined_prompt = "\n\n".join(prompts)
 
-    # Validate combined prompt
-    try:
-        data = PromptModel(prompt=combined_prompt)
-    except ValidationError as exc:
-        print(f"Validation error for combined prompt: {exc}", err=True) # type: ignore
-        raise sys.exit(1)
-
-    # Call OpenAI API function
-    try:
-        response = ask_openai(data.prompt)
-        print(response)
-    except Exception as e:
-        print(f"OpenAI API error: {e}", err=True) # type: ignore
-        raise sys.exit(1)
+    if testBool:
+        print(combined_prompt)
+    else:
+        # Call OpenAI API function
+        try:
+            response = ask_openai(combined_prompt)
+            print(response)
+        except Exception as e:
+            print(f"OpenAI API error: {e}", file=sys.stderr)
+            raise sys.exit(1)
 
 if __name__ == "__main__":
     main()
