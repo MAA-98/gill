@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+import sys
+from llm_api import ask_openai                                   # Import API call function
+
+def parse_prompt_args(args) -> str:
+    """
+    Parse argv manually to support interleaved -m/--message and -f/--file flags,
+    preserving their order in the input.
+    """
+    messageFlag: bool = False
+    filenameFlag: bool = False
+    i = 0
+    prompt: str = ""
+
+    def insert_on_newline(prompt: str, new_msg: str)-> str:
+        if prompt == "":
+            prompt = new_msg
+        else:
+            prompt = prompt + "\n\n" + new_msg
+        return prompt
+
+    while i < len(args):
+        arg = args[i]
+        if arg in ("-m", "--message"):
+            messageFlag = True                                   # There's no ablity to use filenames "-m" or "--message"
+            filenameFlag = False
+        elif arg in ("-f", "--file"):                            # There's no ablity to use a message "-f" or "--file", or such filename
+            messageFlag = False
+            filenameFlag = True
+        elif messageFlag:
+            prompt = insert_on_newline(prompt, arg)
+        elif filenameFlag:
+            try:
+                with open(arg, "r") as f:
+                    content = f.read()
+                    prompt = insert_on_newline(prompt, "```"+arg+"\n" + content + "\n```")
+            except OSError as e:
+                print(f"Failed reading file {arg}: {e}", file=sys.stderr)
+                raise sys.exit(1)
+        else:                                                   # Comes when no message or filename flags have been made
+            raise ValueError(f"Unexpected argument {args[i]}")
+        i += 1
+    return prompt
+
+def main() -> None:
+    debugBool: bool = False
+    testBool: bool = False
+    args = sys.argv[1:]                                         # Cut out the gill command
+
+    if debugBool:
+        print(f"args are: ", args)
+
+    if args[0] == "--test":
+        testBool = True
+        args = args[1:]
+
+    try:
+        prompt = parse_prompt_args(args)
+    except ValueError as e:
+        print(f"Argument error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    if prompt == "":
+        print("Error: Provide at least one -m or -f option with content.", file=sys.stderr)
+        sys.exit(1)
+
+    if testBool:
+        print(prompt)
+    else:
+        # Call OpenAI API function
+        try:
+            response = ask_openai(prompt)
+            print(response)
+        except Exception as e:
+            print(f"OpenAI API error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+if __name__ == "__main__":
+    main()
