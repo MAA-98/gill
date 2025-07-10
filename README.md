@@ -136,3 +136,11 @@ This, too:
 ```
 </code>
 </pre>
+
+---
+
+## License and Contributions
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+While you are free to release derivative works under any compatible license, we *strongly encourage* using permissive licenses such as Apache 2.0 or MIT, and avoiding copyleft licenses like GPL if possible, to maximize compatibility and adoption.
