@@ -11,7 +11,7 @@
 - **Stacked Arguments:** Pass multiple files or lines in a row for conciseness.
 - **Line Extraction:** Reference line(s) or ranges from the most recent file argument so you can excerpt code and send only what’s needed.
 - **Fenced Code Blocks:** Files and line selections are output as Markdown code blocks with filepath and line context.
-- **Test mode:** Learn what prompts your commands make wihtout sending to the API with a beginning `--test` flag.
+- **Test mode:** Learn what prompts your commands make without sending to the API with a `--test` flag.
 
 ---
 
@@ -24,21 +24,21 @@
 ## Usage
 
 ```bash
-gill [-m|--message <text> ...] [-f|--file <filename> ...] [-l|--line <range> ...] ...
+gill ([-m|--message <text> ...]) [-f|--file <filename> ...] [-l|--line <range> ...] ...
 ```
 
 - Use `-l` only after a file flag; it applies to the most recent file.
 - **Order is preserved**, and each flag can take multiple arguments.
 
-## Test Usage
+### Test Usage
 
 ```bash
 gill --test [-m|--message <text> ...] [-f|--file <filename> ...] [-l|--line <range> ...] ...
 ```
 
-- Prepend with '--test' command to print the prompt created, rather than sending to API.
+- Prepend with ```--test``` command to print the prompt created, rather than sending to API.
 
-### Examples
+## Examples
 
 #### Simple prompt with a message
 
@@ -108,52 +108,22 @@ Messages are inserted as plain text sections, separated by blank lines.
 
 ---
 
-## Under the Hood
-
-- Prompts are built in command-line order.
-- Files and lines are read as-needed, and errors are surfaced clearly.
-- API calls are handled through your `llm_api.ask_openai()` implementation (not included here).
-
----
-
-## Exit Codes & Error Handling
-
-- Exits with code 1 and a message on invalid arguments, missing files, or API errors.
-
----
-
-## Development
-
-- Requires Python 3.7+.
-- Needs a local `llm_api.py` with an `ask_openai(prompt: str)->str` function.
-- PRs and issues welcome!
-
----
-
-## License
-
-MIT License (include actual text as desired).
-
----
-
 ## Example Workflow
 
 ```bash
-gill -m "Please explain the bug in these lines." -f foo.py -l 33-86 -m "This, too:" -f bar.py -l 15-20 --test
+gill --test -m "Please explain the bug in these lines." -f foo.py -l 33-86 -m "This, too:" -f bar.py -l 15-20
 ```
 Output:
 ```markdown
 Please explain the bug in these lines.
 
 ```foo.py, lines 33-86
-# foo.py lines 33-86...
-```
+# foo.py lines 33-86...```
 
 This, too:
 
 ```bar.py, lines 15-20
-# bar.py lines...
-```
+# bar.py lines...```
 ```
 
 ---
