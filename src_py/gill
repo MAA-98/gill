@@ -84,7 +84,7 @@ def parse_prompt_args(args) -> str:
                         content = f.read()
                         prompt = insert_on_newline(prompt, f"```{filename}\n{content}\n```")
                 except OSError as e:
-                    print(f"Failed reading file {arg}: {e}", file=sys.stderr)
+                    print(f"Failed reading file {filename}: {e}", file=sys.stderr)
                     raise sys.exit(1)                           # Issue here with inserting only after new file has been given, instead of where the old file was given, can cause mistakes
             filename = arg # Can stack filenames: ```-f file0 file1```
             # Can think of insertedFile as turning True then False again
@@ -138,6 +138,17 @@ def parse_prompt_args(args) -> str:
         else:                                                   # Comes when no message or filename flags have been made
             raise ValueError(f"Unexpected argument {args[i]}")
         i += 1
+
+    # Take care of possible dangling file at the end
+    if filename and not insertedFile:
+        try:
+            with open(filename, "r") as f:
+                content = f.read()
+                prompt = insert_on_newline(prompt, f"```{filename}\n{content}\n```")
+        except OSError as e:
+            print(f"Failed reading file {filename}: {e}", file=sys.stderr)
+            raise sys.exit(1)                           # Issue here with inserting only after new file has been given, instead of where the old file was given, can cause mistakes
+
     return prompt
 
 def main() -> None:
