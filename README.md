@@ -80,7 +80,7 @@ gill --test -m "Explain this function." -f my.py -l 22-40
 
 ## Line Range Syntax
 
-Line ranges for `-l` flags can be specified flexibly:
+Line ranges for `-l` flags are always inclusive and can be specified in various ways:
 
 - Single line: `-l 8`
 - Range: `-l 12-15`
@@ -114,17 +114,21 @@ Messages are inserted as plain text sections, separated by blank lines.
 gill --test -m "Please explain the bug in these lines." -f foo.py -l 33-86 -m "This, too:" -f bar.py -l 15-20
 ```
 Output:
-```markdown
+<pre>
+<code>
 Please explain the bug in these lines.
 
 ```foo.py, lines 33-86
-# foo.py lines 33-86...```
+# foo.py lines 33-86...
+```
 
 This, too:
 
 ```bar.py, lines 15-20
-# bar.py lines...```
+# bar.py lines...
 ```
+</code>
+</pre>
 
 ---
 
