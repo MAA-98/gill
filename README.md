@@ -33,7 +33,7 @@ gill ([-m|--message <text> ...]) [-f|--file <filename> ...] [-l|--line <range> .
 
 1. Flags are stored until another is given, so arguments can always be stacked after a flag.
 
-2. Use `-l` only after a file flag; it applies to the most recent file. File is stored until another is given, so lines are *always* of the last designated file, with the flexibility to insert messages without losing reference to file.
+2. Files are stored until another is given, `-l` applies to the most recent file given. Has the flexibility to insert messages in between lines without losing reference to file.
 
 3. IMPORTANT: If a line of a file is never inserted, then the whole file is inserted at the position it was designated.
 

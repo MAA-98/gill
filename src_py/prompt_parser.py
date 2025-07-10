@@ -50,7 +50,7 @@ def parse_prompt_args(args) -> str:
     Parse argv manually to support interleaved -m/--message and -f/--file flags,
     preserving their order in the input.
     """
-    flag = Optional[InputKind]
+    flag: Optional[InputKind] = None
     filename: Optional[str] = None
     i = 0
 
