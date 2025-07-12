@@ -56,7 +56,7 @@ This, too:
 
 No official package yet. To use the tool:
 
-1.Clone repo, install dependencies and make executable. Something like (replace ```~/path/to/your/dir/gill/src_py/gill``` with the actual full path):
+1. Clone repo, install dependencies and make executable. Something like (replace ```~/path/to/your/dir/gill/src_py/gill``` with the actual full path):
 
 ```bash
 cd ~/path/to/your/dir/
@@ -68,7 +68,7 @@ pip install -r requirements.txt
 chmod +x src_py/gill # May require sudo
 ```
 
-2. Add alias to your ```.bashrc``` or ```.zshrc```. Open and add the lines:
+2. Add alias to your ```.bashrc``` or ```.zshrc```: open file and add the lines:
 
 ```bash
 alias gill='~/path/to/your/dir/gill/src_py/gill'
@@ -158,25 +158,9 @@ Line ranges for `-l` flags are always inclusive and can be specified in various 
 
 ---
 
-## Output Format
+## Example Output
 
-Relevant file or line excerpts are embedded as Markdown fenced code blocks with filenames and line info for clarity:
-
-<pre>
-<code>
-```file.py, lines 23-30
-(def foo...
-# code here
-)
-```
-</code>
-</pre>
-
-Messages are inserted as plain text sections, separated by blank lines.
-
----
-
-## Example Workflow
+Relevant file or line excerpts are embedded as Markdown fenced code blocks with filenames and line info for clarity. Messages are inserted as plain text sections, separated by new lines.
 
 ```bash
 gill --test -m "Please explain the bug in these lines." -f foo.py -l 33-86 -m "This, too:" -f bar.py -l 15-20
