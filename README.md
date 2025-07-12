@@ -4,10 +4,10 @@
 
 ## Features
 
-- **Flexible Prompt Building:** Compose prompts from messages (`-m`):
+- **Flexible Prompt Building:** Compose and send prompts with messages (`-m`):
 
 ```bash
-gill -m "How does main.py work?"
+gill -m "How do Python classes work?"
 ```
 
  whole files (`-f`): 
@@ -54,7 +54,9 @@ This, too:
 
 ## Installation
 
-No official package yet. To use the tool:
+The use of the OpenAI API assumes you have an account and a saved environment key: ```OPENAI_API_KEY```.
+
+Gill has no official package yet. To use the tool in ```bash``` or ```zsh```:
 
 1. Clone repo, install dependencies and make executable. Something like (replace ```~/path/to/your/dir/gill/src_py/gill``` with the actual full path):
 
