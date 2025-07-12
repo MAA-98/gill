@@ -1,23 +1,84 @@
 # gill
 
-**gill** is a command-line utility for building prompts to send to an LLM (currently only OpenAI API). It allows you to quickly construct prompts by interleaving textual messages and code excerpts from files, precisely selecting lines and controlling their order in the final prompt. This makes it ideal for convenient everyday use of a developer.
-
----
+**gill** is a command-line utility for ergonomically declaring prompts in markdown for LLMs, with text input and code selections from your working directory, and sending to an API (currently only OpenAI).
 
 ## Features
 
-- **Flexible Prompt Building:** Compose prompts from messages (`-m`), whole files (`-f`), or precise line ranges within files (`-l`).
-- **Order Preserved:** The order of `-m`, `-f`, and `-l` flags and their arguments is preserved, letting you craft exactly the prompt you want, in the order you want.
-- **Stacked Arguments:** Pass multiple files or lines in a row for conciseness.
-- **Line Extraction:** Reference line(s) or ranges from the most recent file argument so you can excerpt code and send only what’s needed.
-- **Fenced Code Blocks:** Files and line selections are output as Markdown code blocks with filepath and line context.
-- **Test mode:** Learn what prompts your commands make without sending to the API with a `--test` flag.
+- **Flexible Prompt Building:** Compose prompts from messages (`-m`):
+
+```bash
+gill -m "How does main.py work?"
+```
+
+ whole files (`-f`): 
+ 
+```bash
+gill -m "How does this code work?" -f main.py
+```
+
+ or precise line ranges within files (`-l`):
+
+```bash
+gill -m "What does this function do?" -f main.py -l 40-70
+```
+
+- **Interleaved and Stacked Arguments:** Pass multiple files or lines in a row for conciseness:
+
+```bash
+gill -m "A bug is happening in these segments." -f bug.py -l 14-23 45-46 -m "Here's the log:" -f error.log -l 1-8
+```
+
+- **Test mode:** Learn what prompts your commands make without sending to the API with a `--test` flag:
+
+```bash
+gill --test -m "Please explain the bug in these lines." -f foo.py -l 33-86 -m "This, too:" -f bar.py -l 15-20
+```
+Output:
+<pre>
+<code>
+Please explain the bug in these lines.
+
+```foo.py, lines 33-86
+# Code from foo.py lines 33-86...
+```
+
+This, too:
+
+```bar.py, lines 15-20
+# Code from bar.py lines 15-20...
+```
+</code>
+</pre>
 
 ---
 
 ## Installation
 
-### **TODO**
+No official package yet. To use the tool:
+
+1.Clone repo, install dependencies and make executable. Something like (replace ```~/path/to/your/dir/gill/src_py/gill``` with the actual full path):
+
+```bash
+cd ~/path/to/your/dir/
+git clone https://github.com/MAA-98/gill.git
+cd gill
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+chmod +x src_py/gill # May require sudo
+```
+
+2. Add alias to your ```.bashrc``` or ```.zshrc```. Open and add the lines:
+
+```bash
+alias gill='~/path/to/your/dir/gill/src_py/gill'
+```
+
+Save, exit, and reload configuration:
+
+```bash
+source ~/.zshrc
+```
 
 ---
 
