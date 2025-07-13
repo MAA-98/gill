@@ -14,22 +14,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_api import ask_openai                                  # Import API call function
+from init_gill import init_gill_dir
 from prompt_parser import parse_prompt_args                     # Import the parser for prompt instructions
+from llm_api import ask_openai                                  # Import API call function
 
 import sys
 
 def main() -> None:
-    debugBool: bool = False
+    DEBUG_BOOL: bool = False
     testBool: bool = False                                      # Set True with `--test` flag
-    args = sys.argv[1:]                                         # Cut out the `gill` command
 
-    if debugBool:
-        print(f"args are: ", args)
+    # Deal with case of no commands:
+    args = sys.argv
+    if len(args) > 1:
+        args = args[1:]                                         # Cut out the `gill` command
+        if DEBUG_BOOL:
+            print(f"args are: ", args)
+    else: 
+        # TODO: Add help message
+        return
 
-    if args[0] == "--test":
-        testBool = True
-        args = args[1:]
+    match args[0]:
+        case "init":
+            # TODO: Add optional second argument for directory, and init help if extra arguments
+            init_gill_dir(DEBUG_BOOL) # TODO: Add msg on success
+            return
+        case "--test" | "-t":
+            testBool = True
+            args = args[1:]
 
     try:
         prompt = parse_prompt_args(args)
@@ -41,7 +53,7 @@ def main() -> None:
         print("Error: Provide at least one -m or -f option with content.", file=sys.stderr)
         sys.exit(1)
 
-    if testBool or debugBool:
+    if testBool or DEBUG_BOOL:
         print(prompt)
     else:
         try:
