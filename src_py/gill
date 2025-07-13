@@ -21,8 +21,8 @@ import sys
 
 def main() -> None:
     debugBool: bool = False
-    testBool: bool = False                                      # Set True with "--test" flag
-    args = sys.argv[1:]                                         # Cut out the gill command
+    testBool: bool = False                                      # Set True with ```--test``` flag
+    args = sys.argv[1:]                                         # Cut out the ```gill``` command
 
     if debugBool:
         print(f"args are: ", args)
@@ -45,8 +45,15 @@ def main() -> None:
         print(prompt)
     else:
         try:
-            response = ask_openai(prompt)                       # Call OpenAI API function
-            print(response)
+            result = ""
+            response_stream = ask_openai(prompt)                       # Call OpenAI API function
+            for event in response_stream:
+                # Only accumulate the text deltas
+                if event.type == "response.output_text.delta":
+                    # `delta` is the field containing that chunk of text
+                    result += event.delta
+                    print(event.delta, end="", flush=True)
+                # You can handle other event types if you want: e.g., done, content_part.done, etc.
         except Exception as e:
             print(f"OpenAI API error: {e}", file=sys.stderr)
             sys.exit(1)

@@ -14,11 +14,15 @@
 
 from openai import OpenAI
 
+from openai.types.responses import ResponseStreamEvent
+from typing import Iterator
+
 client = OpenAI()
 
-def ask_openai(prompt: str) -> str:
-    response = client.responses.create(
+# See docs at: https://platform.openai.com/docs/guides/
+def ask_openai(prompt: str) -> Iterator[ResponseStreamEvent]:
+    return client.responses.create(
         model="gpt-4.1",
         input=prompt,
+        stream=True,
     )
-    return response.output_text
