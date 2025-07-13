@@ -21,8 +21,8 @@ import sys
 
 def main() -> None:
     debugBool: bool = False
-    testBool: bool = False                                      # Set True with ```--test``` flag
-    args = sys.argv[1:]                                         # Cut out the ```gill``` command
+    testBool: bool = False                                      # Set True with `--test` flag
+    args = sys.argv[1:]                                         # Cut out the `gill` command
 
     if debugBool:
         print(f"args are: ", args)
@@ -46,7 +46,7 @@ def main() -> None:
     else:
         try:
             result = ""
-            response_stream = ask_openai(prompt)                       # Call OpenAI API function
+            response_stream = ask_openai(prompt)                # Call OpenAI API function
             for event in response_stream:
                 # Only accumulate the text deltas
                 if event.type == "response.output_text.delta":
