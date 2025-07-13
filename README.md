@@ -189,7 +189,6 @@ This, too:
 ## Contributions
 
 Planned features, ordered by priority:
-- Stream API output
 - History
 - Config by profiles
 - Support for other LLM APIs
