@@ -16,7 +16,7 @@ gill -m "How do Python classes work?"
 gill -m "How does this code work?" -f main.py
 ```
 
- or precise line ranges within files (`-l`):
+ or line ranges within files (`-l`):
 
 ```bash
 gill -m "What does this function do?" -f main.py -l 40-70
@@ -25,7 +25,7 @@ gill -m "What does this function do?" -f main.py -l 40-70
 - **Interleaved and Stacked Arguments:** Pass multiple files or lines in a row for conciseness:
 
 ```bash
-gill -m "A bug is happening in these segments." -f bug.py -l 14-23 45-46 -m "Here's the log:" -f error.log -l 1-8
+gill -m "A bug is happening in these segments." -f bug.py -l 14-23 45-
 ```
 
 - **Test mode:** Learn what prompts your commands make without sending to the API with a `--test` flag:
@@ -92,21 +92,30 @@ source ~/.zshrc
 gill ([-m|--message <text> ...]) [-f|--file <filename> ...] [-l|--line <range> ...] ...
 ```
 
-### 3 Rules:
-
-1. Flags are stored until another is given, so arguments can always be stacked after a flag.
-
-2. Files are stored until another is given, `-l` applies to the most recent file given. Has the flexibility to insert messages in between lines without losing reference to file.
-
-3. IMPORTANT: If a line of a file is never inserted, then the whole file is inserted at the position it was designated.
-
-### Test Usage
+### Test
 
 ```bash
 gill --test [-m|--message <text> ...] [-f|--file <filename> ...] [-l|--line <range> ...] ...
 ```
 
 - Prepend with ```--test``` command to print the prompt created, rather than sending to API.
+
+### 3 Rules:
+
+1. Flags are stored until another is given, so arguments can always be stacked after a flag.
+
+2. Files are stored until another is given and `-l` applies to the most recent file given. This gives the flexibility to insert messages in between lines without losing reference to file.
+
+3. IMPORTANT: If a line of a file is never inserted, then the whole file is inserted at the position the file was given.
+
+### Line Range Syntax
+
+Line ranges for `-l` flags are always inclusive and can be specified in various ways:
+
+- Single line: `-l 8`
+- Finite Inclusive Range: `-l 12-15` or any of `-l 12--15`, `-l 12,15`, `-l 12.15`, `-l 12..15`
+- From beginning or till end: start of file till line 12 with `-l -12` or line 12 till end of file with `-l 12-`. Or the other delimiters `--`, `,`, `.`, `..`
+- Multiple `-l` flags/args can stack for multiple excerpts from one file.
 
 ## Examples
 
@@ -137,7 +146,7 @@ gill -m "Compare these two:" -f file1.py -l 2-10 -f file2.py -l 3-8
 #### Mixing multiple messages and files
 
 ```bash
-gill -m "A bug is happening in these segments." -f bug.py -l 14-23 45,46 -m "Here's the log:" -f error.log -l 2
+gill -m "A bug is happening in these segments." -f bug.py -l 14-23 45- -m "Here's the log:" -f error.log -l 2
 ```
 
 #### Test mode (print prompt only, don’t send)
@@ -145,18 +154,6 @@ gill -m "A bug is happening in these segments." -f bug.py -l 14-23 45,46 -m "Her
 ```bash
 gill --test -m "Explain this function." -f my.py -l 22-40
 ```
-
----
-
-## Line Range Syntax
-
-Line ranges for `-l` flags are always inclusive and can be specified in various ways:
-
-- Single line: `-l 8`
-- Range: `-l 12-15`
-- Comma: `-l 20,24`
-- Double hyphen or double dot: `-l 50--60` or `-l 50..60`
-- Multiple `-l` flags/args can stack for multiple excerpts from one file.
 
 ---
 

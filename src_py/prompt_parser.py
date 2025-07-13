@@ -16,38 +16,52 @@ import sys
 from enum import Enum
 from typing import Optional
 import re
-from typing import Tuple, Union
+from typing import Tuple, Union, TypeAlias
 
-def parse_line_range(s: str) -> Union[Tuple[int], Tuple[int, int]]:
+LineInterval: TypeAlias = Union[
+    Tuple[int], 
+    Tuple[Optional[int], int], # left is None => (-∞, right]
+    Tuple[int, Optional[int]] # right is None => [left, +∞)
+]
+
+def parse_line_range(s: str) -> LineInterval:
     """
     Parses a string that can represent:
 
     - a single integer "12"
     - two integers separated by one of these delimiters: "-", ",", "--", ".", ".."
+    - integer and infinity in either direction
     
     Returns:
-        (int,) or (int, int)
+        LineIntervals: TypeAlias = Union[
+        Tuple[int], 
+        Tuple[Optional[int], int],
+        Tuple[int, Optional[int]]
+        ]
         
     Raises:
         ValueError if the string doesn't conform.
     """
     s = s.strip()
-    # Pattern to match two numbers separated by delimiters: - , -- . ..
-    # We'll consider any of these delimiters, only one of them should exist between two numbers.
-    # To be flexible, we consider the longest delimiter first (--, ..), then single (-, .)
-    delimiters = ["--", "-", ",", "..", "."]
 
     # Try single number first
     if re.fullmatch(r"\d+", s):
         return (int(s),)
-
-    # Try to split by delimiters, trying longest first to avoid splitting "12--13" as "12", "-13"
+    
+    s = "i"+s+"i"
+    # Try to split by delimiters, trying longest first to avoid splitting "i12--13i" as "i12", "-13i"
+    delimiters = ["--", "-", ",", "..", "."]
+    
     for delim in delimiters:
         parts = s.split(delim)
         if len(parts) == 2:
-            left, right = parts[0].strip(), parts[1].strip()
+            left, right = parts[0][1:].strip(), parts[1][:-1].strip()
             if left.isdigit() and right.isdigit():
                 return (int(left), int(right))
+            elif left.isdigit() and right == "":
+                return (int(left), None)
+            elif left == "" and right.isdigit():
+                return (None, int(right))
 
     raise ValueError(f"String '{s}' is not a recognized integer or integer range with delimiters.")
 
@@ -55,9 +69,6 @@ class InputKind(Enum):
     Message = "message"
     File = "file"
     Line = "line"
-
-def insert_file():
-    return None
 
 def parse_prompt_args(args) -> str:
     """
@@ -68,22 +79,15 @@ def parse_prompt_args(args) -> str:
     filename: Optional[str] = None
     i = 0
 
-    # ```len(prompt) == 2``` indicates a file has been declared at the point between 
-    # the two strings, but not yet inserted. Leaving possibility to insert lines at 
+    # `len(prompt) == 2` indicates a file has been declared at the point between 
+    # the two strings, but lines not yet inserted, leaving possibility to insert lines at 
     # the end or the whole file in between the two strings:
     prompt: Union[Tuple[str], Tuple[str, str]] = ("",)
-
-    # def insert_on_newline(prompt: str, new_msg: str)-> str:
-    #     if prompt == "":
-    #         prompt = new_msg
-    #     else:
-    #         prompt = prompt + "\n\n" + new_msg
-    #     return prompt
 
     while i < len(args):
         arg = args[i]
 
-        # First checks flags, so you can cancel flags ```gill -f -m "msg"``` == ```gill -m "msg"```
+        # First checks flags, so you can cancel flags `gill -f -m "msg"` == `gill -m "msg"`
         if arg in ("-m", "--message"):
             flag = InputKind.Message
         elif arg in ("-f", "--file"):
@@ -94,7 +98,7 @@ def parse_prompt_args(args) -> str:
         # Argument is not a flag, so execute if you have a flag on
         elif flag == InputKind.Message:
             if len(prompt) == 1:
-                prompt = (prompt[0] + "\n" + arg + "\n", ) # Can stack messages: ```-m "Msg number 1" "Msg number 2"```
+                prompt = (prompt[0] + "\n" + arg + "\n", ) # Can stack messages: `-m "Msg number 1" "Msg number 2"`
             else:
                 prompt = (prompt[0], prompt[1] + "\n" + arg + "\n")
         elif flag == InputKind.File:
@@ -127,7 +131,7 @@ def parse_prompt_args(args) -> str:
                 print("No filename given for lines.")
                 raise sys.exit(1)
             else:
-                # Parse the requested lines, e.g. "12", "12-15", "12,15"
+                # Parse the requested lines, e.g. "12", "12-15", "12,15", "12-"
                 try:
                     lines_spec = parse_line_range(arg)
                     # Determine which lines to keep
@@ -148,23 +152,30 @@ def parse_prompt_args(args) -> str:
                     print(f"Failed reading file {arg}: {e}", file=sys.stderr)
                     raise sys.exit(1)
                 
-                # Clip to valid line numbers within file
-                start = max(start, 1)
-                end = min(end, len(all_lines))
-                if start > end:
+                # Fix the potential None in LineInterval
+                if not start:
+                    start_int = 1
+                else:
+                    start_int = max(start, 1)
+                if not end:
+                    end_int = len(all_lines)
+                else:
+                    end_int = min(end, len(all_lines))
+                if start_int > end_int:
                     print(f"Invalid line range: start ({start}) > end ({end})", file=sys.stderr)
                     sys.exit(1)
 
-                selected_lines = all_lines[start-1 : end]  # 0-based slicing
+                # Clip all_lines to valid line numbers within file:
+                selected_lines = all_lines[start_int-1 : end_int]  # 0-based slicing
 
                 # Join selected lines into a string
                 selected_content = ''.join(selected_lines).rstrip('\n')  # strip trailing newlines to control output
 
                 # Create code block with filename header and fenced code block
                 if len(lines_spec) == 1:
-                    code_block = f"\n```{filename}, line {start}\n{selected_content}\n```\n"
+                    code_block = f"\n```{filename}, line {start_int}\n{selected_content}\n```\n"
                 else:
-                    code_block = f"\n```{filename}, lines {start}-{end}\n{selected_content}\n```\n"
+                    code_block = f"\n```{filename}, lines {start_int}-{end_int}\n{selected_content}\n```\n"
                 
                 # Insert, creating 1-tuple to indicate file was inserted
                 if len(prompt) == 1: # indicates lines already inserted
