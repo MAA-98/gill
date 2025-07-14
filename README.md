@@ -4,28 +4,10 @@
 
 ## Features
 
-- **Flexible Prompt Building:** Compose and send prompts with messages (`-m`):
+- **Flexible Prompt Building:** Compose and send prompts with messages (`-m`), whole files (`-f`) or line ranges within files (`-l`) using interleaved and stacked arguments:
 
 ```bash
-gill -m "How do Python classes work?"
-```
-
- whole files (`-f`): 
- 
-```bash
-gill -m "How does this code work?" -f main.py
-```
-
- or line ranges within files (`-l`):
-
-```bash
-gill -m "What does this function do?" -f main.py -l 40-70
-```
-
-- **Interleaved and Stacked Arguments:** Pass multiple files or lines in a row for conciseness:
-
-```bash
-gill -m "A bug is happening in these segments." -f bug.py -l 14-23 45-
+gill -m "What does this function do?" -f main.py -l 14-23 45- -m "Explain line by line."
 ```
 
 - **Test mode:** Learn what prompts your commands make without sending to the API with a `--test` flag:
@@ -49,6 +31,13 @@ This, too:
 ```
 </code>
 </pre>
+
+- **Save System Prompt:** Create a gill repository at the current working directory and edit the system prompt used in API calls:
+
+```bash
+gill init
+nano $(gill sysprompt)
+```
 
 ---
 
