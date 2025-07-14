@@ -18,7 +18,8 @@ def print_help(command: str) -> None:
             help_text = """
 Usage: gill init [<directory>]
 
-Initializes a new Gill project in the current or specified directory
+Initializes a new Gill project in the current working directory or, 
+if specified, the directory given relative to the current working directory.
 
 Examples:
   gill init

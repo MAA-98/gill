@@ -84,7 +84,7 @@ source ~/.zshrc
 
 ---
 
-## Usage
+## Basic Usage
 
 **Order is preserved**.
 

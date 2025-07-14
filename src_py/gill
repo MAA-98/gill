@@ -20,36 +20,32 @@ from prompt_parser import parse_prompt_args                     # Import the par
 from llm_api import ask_openai                                  # Import API call function
 
 import sys
-import os
 
 def main() -> None:
     DEBUG_BOOL: bool = False
     testBool: bool = False                                      # Set True with `--test` flag
 
-    # Deal with case of no commands:
     args = sys.argv
     if len(args) > 1:
         args = args[1:]                                         # Cut out the `gill` command
         if DEBUG_BOOL:
             print(f"args are: ", args)
     else: 
+        # Deal with case of no commands
         print_help("gill")                                      # Only sent `gill`
         return
 
     match args[0]:
         case "init":
             args = args[1:] # Empty list if no extra arguments
-            if len(args) > 1:
-                print_help("gill init")
-                sys.exit(1)
-            else:
+            if len(args) < 2:
                 try: 
-                    gill_init(DEBUG_BOOL, args) # TODO: At the moment args doesn't change anything
-                    print(f"Initialized new Gill project at {os.getcwd()}")
+                    gill_init(DEBUG_BOOL, args)
                     return
                 except Exception as e:
                     print(f"Error: {e}", file=sys.stderr)
-                    sys.exit(1)
+            print_help("gill init")
+            sys.exit(1)
         case "--test" | "-t":
             testBool = True
             args = args[1:]
