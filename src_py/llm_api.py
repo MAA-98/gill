@@ -13,16 +13,34 @@
 # limitations under the License.
 
 from openai import OpenAI
-
 from openai.types.responses import ResponseStreamEvent
+from openai.types.chat import ChatCompletionChunk
+
 from typing import Iterator
+import os
 
 client = OpenAI()
 
-# See docs at: https://platform.openai.com/docs/guides/
-def ask_openai(prompt: str) -> Iterator[ResponseStreamEvent]:
-    return client.responses.create(
+# See general docs at: https://platform.openai.com/docs/guides/
+# For streaming CC: https://platform.openai.com/docs/api-reference/chat-streaming
+
+def ask_openai(prompt: str) -> Iterator[ChatCompletionChunk]:
+    cwd = os.getcwd()
+    dir_name = ".gill"
+    gill_path = os.path.join(cwd, dir_name)
+    sysprompt_path = os.path.join(gill_path, "sysprompt")
+
+    if os.path.isfile(sysprompt_path):
+        with open(sysprompt_path, "r", encoding="utf-8") as f:
+            sysprompt_content = f.read()
+    else:
+        sysprompt_content = ""
+
+    return client.chat.completions.create(
         model="gpt-4.1",
-        input=prompt,
+        messages=[
+            {"role": "developer", "content": sysprompt_content},
+            {"role": "user", "content": prompt}
+        ],
         stream=True,
     )

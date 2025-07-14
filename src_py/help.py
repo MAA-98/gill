@@ -14,17 +14,6 @@
 
 def print_help(command: str) -> None:
     match command:
-        case "gill init":
-            help_text = """
-Usage: gill init [<directory>]
-
-Initializes a new Gill project in the current working directory or, 
-if specified, the directory given relative to the current working directory.
-
-Examples:
-  gill init
-  gill init myproject_dir
-"""
         case "gill":
             help_text = """
 Usage:
@@ -44,6 +33,33 @@ Examples:
   gill --test -m "Explain this function." -f my.py -l 22-40
 
 For detailed docs visit: https://github.com/MAA-98/gill
+"""
+        case "gill init":
+            help_text = """
+Usage: gill init [<directory>]
+
+Initializes a new Gill project in the current working directory or, 
+if specified, the directory given relative to the current working directory.
+
+Examples:
+  gill init
+  gill init myproject_dir
+"""
+        case "gill sysprompt":
+            help_text = """
+Usage: gill sysprompt
+
+Outputs the file path to the current system prompt used in API calls.
+
+You can then read or edit this file easily. For example:
+
+  cat $(gill sysprompt)
+  nano $(gill sysprompt)
+  vim $(gill sysprompt)
+
+This allows you to view or modify the contents of the system prompt directly.
+
+Typically, this file is located inside the `.gill` directory created by `gill init`.
 """
         case _:
             help_text = ""

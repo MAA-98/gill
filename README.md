@@ -100,6 +100,16 @@ gill --test [-m|--message <text> ...] [-f|--file <filename> ...] [-l|--line <ran
 
 - Prepend with ```--test``` command to print the prompt created, rather than sending to API.
 
+---
+
+## Advanced Usage
+
+As in `git`, initialize a Gill project with `gill init` or `gill init [<directory>]`.
+
+### System Prompt
+
+Access the file path to the system prompt used in API calls with `gill sysprompt`. Then read with `cat $(gill sysprompt)` or edit with your choice of editor, e.g. `nano $(gill sysprompt)`.
+
 ### 3 Rules:
 
 1. Flags are stored until another is given, so arguments can always be stacked after a flag.
@@ -186,9 +196,8 @@ This, too:
 ## Contributions
 
 Planned features, ordered by priority:
-- History
-- Config by profiles
-- Support for other LLM APIs
+- Configs
+- Chat History
 - Insert webpage contents by URL
 - Migrate to C
 

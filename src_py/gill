@@ -16,6 +16,8 @@
 
 from help import print_help
 from gill_init import gill_init
+from aliases import aliases
+from gill_sysprompt import gill_sysprompt
 from prompt_parser import parse_prompt_args                     # Import the parser for prompt instructions
 from llm_api import ask_openai                                  # Import API call function
 
@@ -32,7 +34,7 @@ def main() -> None:
             print(f"args are: ", args)
     else: 
         # Deal with case of no commands
-        print_help("gill")                                      # Only sent `gill`
+        print_help("gill")
         return
 
     match args[0]:
@@ -45,6 +47,16 @@ def main() -> None:
                 except Exception as e:
                     print(f"Error: {e}", file=sys.stderr)
             print_help("gill init")
+            sys.exit(1)
+        case value if value in aliases("sysprompt"):
+            args = args[1:] # Empty list if no extra arguments
+            if len(args) == 0:
+                try:
+                    gill_sysprompt(DEBUG_BOOL)
+                    return
+                except Exception as e:
+                    print(f"Error: {e}", file=sys.stderr)
+            print_help("gill sysprompt")
             sys.exit(1)
         case "--test" | "-t":
             testBool = True
@@ -65,14 +77,15 @@ def main() -> None:
     else:
         try:
             result = ""
-            response_stream = ask_openai(prompt)                # Call OpenAI API function
-            for event in response_stream:
+            cc_stream = ask_openai(prompt)                # Call OpenAI API function
+            for event in cc_stream:
                 # Only accumulate the text deltas
-                if event.type == "response.output_text.delta":
-                    # `delta` is the field containing that chunk of text
-                    result += event.delta
-                    print(event.delta, end="", flush=True)
+                content_delta = event.choices[0].delta.content
+                if content_delta:
+                    result += content_delta
+                    print(content_delta, end="", flush=True)
                 # You can handle other event types if you want: e.g., done, content_part.done, etc.
+            print() # flush newline at end of stream
         except Exception as e:
             print(f"OpenAI API error: {e}", file=sys.stderr)
             sys.exit(1)
