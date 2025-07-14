@@ -94,15 +94,11 @@ gill ([-m|--message <text> ...]) [-f|--file <filename> ...] [-l|--line <range> .
 
 ### Test
 
+Use ```--test``` flag to print the prompt created, rather than sending to API:
+
 ```bash
 gill --test [-m|--message <text> ...] [-f|--file <filename> ...] [-l|--line <range> ...] ...
 ```
-
-- Prepend with ```--test``` command to print the prompt created, rather than sending to API.
-
-### System Prompt
-
-Access the file path to the system prompt used in API calls with `gill sysprompt`. Then read with `cat $(gill sysprompt)` or edit with your choice of editor, e.g. `nano $(gill sysprompt)`.
 
 ### 3 Rules:
 
@@ -126,6 +122,10 @@ Line ranges for `-l` flags are always inclusive and can be specified in various 
 ## Advanced Usage
 
 As in `git`, initialize a Gill project with `gill init` or `gill init [<directory>]`.
+
+### System Prompt
+
+Access the file path to the system prompt used in API calls with `gill sysprompt`. Then read with `cat $(gill sysprompt)` or edit with your choice of editor, e.g. `nano $(gill sysprompt)`.
 
 ---
 
