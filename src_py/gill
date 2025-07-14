@@ -14,11 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from init_gill import init_gill_dir
+from help import print_help
+from gill_init import gill_init
 from prompt_parser import parse_prompt_args                     # Import the parser for prompt instructions
 from llm_api import ask_openai                                  # Import API call function
 
 import sys
+import os
 
 def main() -> None:
     DEBUG_BOOL: bool = False
@@ -31,14 +33,23 @@ def main() -> None:
         if DEBUG_BOOL:
             print(f"args are: ", args)
     else: 
-        # TODO: Add help message
+        print_help("gill")                                      # Only sent `gill`
         return
 
     match args[0]:
         case "init":
-            # TODO: Add optional second argument for directory, and init help if extra arguments
-            init_gill_dir(DEBUG_BOOL) # TODO: Add msg on success
-            return
+            args = args[1:] # Empty list if no extra arguments
+            if len(args) > 1:
+                print_help("gill init")
+                sys.exit(1)
+            else:
+                try: 
+                    gill_init(DEBUG_BOOL, args) # TODO: At the moment args doesn't change anything
+                    print(f"Initialized new Gill project at {os.getcwd()}")
+                    return
+                except Exception as e:
+                    print(f"Error: {e}", file=sys.stderr)
+                    sys.exit(1)
         case "--test" | "-t":
             testBool = True
             args = args[1:]
