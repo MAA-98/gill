@@ -18,6 +18,7 @@ from openai.types.chat import ChatCompletionChunk
 
 from typing import Iterator
 import os
+import re
 
 client = OpenAI()
 
@@ -33,6 +34,10 @@ def ask_openai(prompt: str) -> Iterator[ChatCompletionChunk]:
     if os.path.isfile(sysprompt_path):
         with open(sysprompt_path, "r", encoding="utf-8") as f:
             sysprompt_content = f.read()
+            # Remove trailing newlines, spaces, or carriage returns for request
+            prompt = prompt.rstrip('\n\r ')
+            # Remove unwanted control chars except \n and tabs if you want:
+            prompt = re.sub(r'[\x00-\x08\x0B-\x0C\x0E-\x1F]', '', prompt)
     else:
         sysprompt_content = ""
 
