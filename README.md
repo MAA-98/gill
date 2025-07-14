@@ -100,12 +100,6 @@ gill --test [-m|--message <text> ...] [-f|--file <filename> ...] [-l|--line <ran
 
 - Prepend with ```--test``` command to print the prompt created, rather than sending to API.
 
----
-
-## Advanced Usage
-
-As in `git`, initialize a Gill project with `gill init` or `gill init [<directory>]`.
-
 ### System Prompt
 
 Access the file path to the system prompt used in API calls with `gill sysprompt`. Then read with `cat $(gill sysprompt)` or edit with your choice of editor, e.g. `nano $(gill sysprompt)`.
@@ -126,6 +120,14 @@ Line ranges for `-l` flags are always inclusive and can be specified in various 
 - Finite Inclusive Range: `-l 12-15` or any of `-l 12--15`, `-l 12,15`, `-l 12.15`, `-l 12..15`
 - From beginning or till end: start of file till line 12 with `-l -12` or line 12 till end of file with `-l 12-`. Or the other delimiters `--`, `,`, `.`, `..`
 - Multiple `-l` flags/args can stack for multiple excerpts from one file.
+
+---
+
+## Advanced Usage
+
+As in `git`, initialize a Gill project with `gill init` or `gill init [<directory>]`.
+
+---
 
 ## Examples
 
