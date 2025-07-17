@@ -39,11 +39,10 @@ gill init
 nano $(gill sysprompt)
 ```
 
-- **Project-Level Configs:** Select the current OpenAI model used by the API:
+- **Project-Level Configs:** Show the current OpenAI model used by the API:
 
 ```bash
 gill config --list
-gill config set llm.model "gpt-4.1"
 ```
 
 Output:
@@ -53,6 +52,11 @@ Output:
 model = "gpt-4.1-mini"
 </code>
 </pre>
+
+Change the model used:
+```bash
+gill config set llm.model "gpt-4.1"
+```
 
 ---
 
