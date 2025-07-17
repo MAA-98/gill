@@ -19,6 +19,8 @@ from typing import Iterator
 import os
 import re
 
+from gill_config import load_config
+
 client = OpenAI()
 
 # See general docs at: https://platform.openai.com/docs/guides/
@@ -29,6 +31,9 @@ def ask_openai(prompt: str) -> Iterator[ChatCompletionChunk]:
     dir_name = ".gill"
     gill_path = os.path.join(cwd, dir_name)
     sysprompt_path = os.path.join(gill_path, "sysprompt")
+    config_path = os.path.join(gill_path, "config.toml")
+    config = load_config(config_path)
+    model = config["llm"]["model"]
 
     if os.path.isfile(sysprompt_path):
         with open(sysprompt_path, "r", encoding="utf-8") as f:
@@ -41,7 +46,7 @@ def ask_openai(prompt: str) -> Iterator[ChatCompletionChunk]:
         sysprompt_content = ""
 
     return client.chat.completions.create(
-        model="gpt-4.1",
+        model=model,
         messages=[
             {"role": "developer", "content": sysprompt_content},
             {"role": "user", "content": prompt}

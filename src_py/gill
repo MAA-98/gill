@@ -73,6 +73,7 @@ def main() -> None:
         case "--test" | "-t":
             testBool = True
             args = args[1:]
+        # TODO: --help command
 
     try:
         prompt = parse_prompt_args(args)

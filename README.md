@@ -187,10 +187,10 @@ This, too:
 ## Contributions
 
 Planned features, ordered by priority:
-- Configs
 - Chat History
 - Insert webpage contents by URL
 - Migrate to C
+- Completions with Tab
 
 ## License
 

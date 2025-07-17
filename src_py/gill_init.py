@@ -77,8 +77,7 @@ def gill_init(debug_bool: bool, arg: Optional[str]):
     config_path = os.path.join(gill_path, "config.toml")
     toml_content = """
 [llm]
-provider = "OpenAI"
-model = "gpt-4.1"
+model = "gpt-4.1-mini"
 """
     try:
         # This opens and creates file of default settings

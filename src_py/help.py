@@ -61,6 +61,30 @@ This allows you to view or modify the contents of the system prompt directly.
 
 Typically, this file is located inside the `.gill` directory created by `gill init`.
 """
+        case "gill config":
+            help_text = """
+Usage:
+  gill config set <section.key> <value>
+  gill config <section.key>
+  gill config --list
+
+Manages configuration values for your Gill project.
+
+Commands:
+  set <section.key> <value>     Set the given configuration key to a new value.
+  <section.key>                 Print the value of the specified key.
+  --list                        List all current configuration values.
+
+Notes:
+  - Keys must be specified in the '<section.key>' format (e.g., llm.model).
+  - Config file is typically stored at .gill/config.toml in your project directory.
+
+Examples:
+  gill config set llm.provider OpenAI
+  gill config set llm.model gpt-4-turbo
+  gill config llm.model
+  gill config --list
+"""
         case _:
             help_text = ""
     print(help_text)
