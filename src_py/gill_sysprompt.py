@@ -15,7 +15,7 @@
 import os
 import sys
 
-def gill_sysprompt(debugBool: bool) -> None:
+def gill_sysprompt() -> None:
     cwd = os.getcwd()
     dir_name = ".gill"
     gill_path = os.path.join(cwd, dir_name)

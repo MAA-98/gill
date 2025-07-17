@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from openai import OpenAI
-from openai.types.responses import ResponseStreamEvent
 from openai.types.chat import ChatCompletionChunk
 
 from typing import Iterator

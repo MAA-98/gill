@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Optional
 import os
 
-def gill_init(debug_bool: bool, args: list[str]):
+def gill_init(debug_bool: bool, arg: Optional[str]):
     """
     Initialize a new Gill project directory structure.
 
@@ -42,11 +43,12 @@ def gill_init(debug_bool: bool, args: list[str]):
     """
     dir_name = ".gill"
     cwd = os.getcwd()
-    if args:
-        cwd = os.path.join(cwd, args[0])
+    if arg:
+        cwd = os.path.join(cwd, arg)
     gill_path = os.path.join(cwd, dir_name)
-    # Now cwd is either cwd or cwd + args[0]
+    # Now cwd is either cwd or cwd + arg
 
+    # Creating .gill directory
     if os.path.exists(gill_path):
         if os.path.isdir(gill_path):
             raise IsADirectoryError(f"Directory already exists at {gill_path}. Delete or move it and try again.")
@@ -60,14 +62,31 @@ def gill_init(debug_bool: bool, args: list[str]):
         except OSError as e:
             raise OSError(f"Error creating directory '{dir_name}': {e}")
 
+    # Creating sysprompt file
     sysprompt_path = os.path.join(gill_path, "sysprompt")
     try:
-        # This opens (creates if doesn't exist) and immediately closes the file.
+        # This opens (creates if doesn't exist) and immediately closes the file. # TODO: Have a user level defualt system prompt
         with open(sysprompt_path, "w") as f:
             f.write("")  # or put some initial content here if you want
         if debug_bool:
             print(f"File 'sysprompt' created at {sysprompt_path}")
     except OSError as e:
         raise OSError(f"Error creating file 'sysprompt': {e}")
+    
+    # Creating config file
+    config_path = os.path.join(gill_path, "config.toml")
+    toml_content = """
+[llm]
+provider = "OpenAI"
+model = "gpt-4.1"
+"""
+    try:
+        # This opens and creates file of default settings
+        with open(config_path, "w") as f:
+            f.write(toml_content)
+        if debug_bool:
+            print(f"File 'config.toml' created at {config_path}")
+    except OSError as e:
+        raise OSError(f"Error creating file 'config.toml': {e}")
     
     print(f"Initialized new Gill project at {cwd}")

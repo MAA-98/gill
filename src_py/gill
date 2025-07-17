@@ -18,6 +18,7 @@ from help import print_help
 from gill_init import gill_init
 from aliases import aliases
 from gill_sysprompt import gill_sysprompt
+from gill_config import gill_config
 from prompt_parser import parse_prompt_args                     # Import the parser for prompt instructions
 from llm_api import ask_openai                                  # Import API call function
 
@@ -39,20 +40,31 @@ def main() -> None:
 
     match args[0]:
         case "init":
-            args = args[1:] # Empty list if no extra arguments
+            args = args[1:]                                     # Cut out the `init` command
             if len(args) < 2:
-                try: 
-                    gill_init(DEBUG_BOOL, args)
+                arg = args[0] if len(args) > 0 else None        # Either has one more command for directory or None
+                try:
+                    gill_init(DEBUG_BOOL, arg)
                     return
                 except Exception as e:
                     print(f"Error: {e}", file=sys.stderr)
             print_help("gill init")
             sys.exit(1)
-        case value if value in aliases("sysprompt"):
-            args = args[1:] # Empty list if no extra arguments
-            if len(args) == 0:
+        case "config" | "configuration":
+            args = args[1:]                                     # Cut out `config` command
+            if len(args) > 0:
                 try:
-                    gill_sysprompt(DEBUG_BOOL)
+                    gill_config(args)
+                    return
+                except Exception as e:
+                    print(f"Error: {e}", file=sys.stderr)
+            print_help("gill_config")
+            sys.exit(1)
+        case value if value in aliases("sysprompt"):
+            args = args[1:]                                     # Cut out `sysprompt` command
+            if len(args) == 0:                                  # Only accept no commands
+                try:
+                    gill_sysprompt()
                     return
                 except Exception as e:
                     print(f"Error: {e}", file=sys.stderr)
