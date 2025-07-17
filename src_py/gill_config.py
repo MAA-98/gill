@@ -58,7 +58,7 @@ def gill_config(args: list[str]) -> None:
         update_toml_file(config_path, section, key, value, config)
         return
 
-    # Displayiong config values
+    # Displaying config values
     elif command == "--list":
         if not len(args) == 1:
             raise ConfigError("Use --list to display config values.")
