@@ -39,6 +39,21 @@ gill init
 nano $(gill sysprompt)
 ```
 
+- **Project-Level Configs:** Select the current OpenAI model used by the API:
+
+```bash
+gill config --list
+gill config set llm.model "gpt-4.1"
+```
+
+Output:
+<pre>
+<code>
+[llm]
+model = "gpt-4.1-mini"
+</code>
+</pre>
+
 ---
 
 ## Installation
@@ -115,6 +130,10 @@ As in `git`, initialize a Gill project with `gill init` or `gill init [<director
 ### System Prompt
 
 Access the file path to the system prompt used in API calls with `gill sysprompt`. Then read with `cat $(gill sysprompt)` or edit with your choice of editor, e.g. `nano $(gill sysprompt)`.
+
+### Configs
+
+Change the OpenAI model used by the API while working on the project with `gill config set <section.key>`, currently the only valid `<section.key>` is `llm.model`. Check which model is being used with `gill config`.
 
 ---
 

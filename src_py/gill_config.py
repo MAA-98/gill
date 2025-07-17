@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import os
+from typing import Any
+
 import tomllib                          # For reading
 import toml                             # For writing
 
@@ -40,7 +42,7 @@ def gill_config(args: list[str]) -> None:
 
     if not os.path.isfile(config_path):                                             # Checking config file exists
         raise ConfigError(f"No config file found at '{config_path}'. Try initializing in the working directory again.")
-    config = load_config(config_path)                                               # Load existing config
+    config = load_config(config_path)                                               # Load existing config as Python dict with string keys
 
     command = args[0]
 
@@ -83,7 +85,7 @@ def gill_config(args: list[str]) -> None:
 
     return
 
-def load_config(config_path: str) -> dict:
+def load_config(config_path: str) -> dict[str, Any]:
     try:
         with open(config_path, "rb") as f:
             return tomllib.load(f)
@@ -92,8 +94,8 @@ def load_config(config_path: str) -> dict:
 
 def print_config(config: dict) -> None:
     """Pretty-print TOML config dictionary."""
-    import pprint
-    pprint.pprint(config, indent=2, compact=False)
+    toml_string = toml.dumps(config).strip()
+    print(toml_string)
 
 def update_toml_file(path: str, section: str, key: str, value: str, current_config: dict) -> None:
     # Mutable copy
