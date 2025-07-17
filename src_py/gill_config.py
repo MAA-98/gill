@@ -27,6 +27,8 @@ def gill_config(args: list[str]) -> None:
         gill_config(["set", "llm.provider", "OpenAI"])
         gill_config(["llm.model"])
         gill_config(["--list"])
+
+        See list of OpenAI models at : https://platform.openai.com/docs/models
     """
     if not args:
         raise ConfigError("No command specified. Use 'set', '--list', or a section.key to get a value.")
