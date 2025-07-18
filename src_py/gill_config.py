@@ -85,7 +85,7 @@ def gill_config(args: list[str]) -> None:
 
     return
 
-def load_config(config_path: str) -> dict[str, Any]:
+def load_config(config_path: str) -> dict[str, dict[str, str]]:
     try:
         with open(config_path, "rb") as f:
             return tomllib.load(f)

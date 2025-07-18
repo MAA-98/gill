@@ -65,7 +65,7 @@ def gill_init(debug_bool: bool, arg: Optional[str]):
     # Creating sysprompt file
     sysprompt_path = os.path.join(gill_path, "sysprompt")
     try:
-        # This opens (creates if doesn't exist) and immediately closes the file. # TODO: Have a user level defualt system prompt
+        # This opens (creates if doesn't exist) and immediately closes the file.
         with open(sysprompt_path, "w") as f:
             f.write("")  # or put some initial content here if you want
         if debug_bool:
@@ -87,5 +87,14 @@ model = "gpt-4.1-mini"
             print(f"File 'config.toml' created at {config_path}")
     except OSError as e:
         raise OSError(f"Error creating file 'config.toml': {e}")
+    
+    # Creating chats dir
+    chats_dir = os.path.join(gill_path, "chats")
+    try:
+        os.makedirs(chats_dir)
+        if debug_bool:
+            print(f"Directory 'chats' created at {chats_dir}")
+    except OSError as e:
+        raise OSError(f"Error creating directory 'chats': {e}")
     
     print(f"Initialized new Gill project at {cwd}")
