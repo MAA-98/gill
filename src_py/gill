@@ -28,7 +28,7 @@ import os
 import json
 
 def main() -> None:
-    DEBUG_BOOL: bool = True
+    DEBUG_BOOL: bool = False
     testBool: bool = False                                      # Set True with `--test` flag
 
     args = sys.argv
@@ -104,12 +104,13 @@ def main() -> None:
         return
     
     # Check for chat head, 
-    # this also creates a new head, with the current sysprompt,
-    # if configs exist but head does not.
-    head = head_chat()
-    if head:
-        full_path = os.path.join(get_chat_path(), head)
-        with open(full_path, "r", encoding="utf-8") as f:
+    # this also creates a new head, with the current
+    # sysprompt, if configs exist but head does not.
+    head_name = head_chat()
+    head_path = None
+    if head_name:
+        head_path = os.path.join(get_chat_path(), head_name)
+        with open(head_path, "r", encoding="utf-8") as f:
             messages = json.load(f)  # Type Any!
     else:
         messages = [{"role": "developer", "content": ""},]
@@ -134,8 +135,10 @@ def main() -> None:
         print(f"OpenAI API error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    #if head:
-        # TODO: Add to chat head file
+    if head_path:
+        messages.append({"role": "assistant", "content": result})
+        with open(head_path, "w", encoding="utf-8") as f:
+            json.dump(messages, f, indent=2, ensure_ascii=False)
 
 if __name__ == "__main__":
     main()
