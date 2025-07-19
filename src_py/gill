@@ -18,15 +18,17 @@ from help import print_help
 from gill_init import gill_init
 from aliases import aliases
 from gill_sysprompt import gill_sysprompt
-from gill_config import gill_config, load_config
+from gill_config import gill_config
+from gill_chat import gill_chat, head_chat, get_chat_path
 from prompt_parser import parse_prompt_args                     # Import the parser for prompt instructions
 from llm_api import ask_openai                                  # Import API call function
 
 import sys
 import os
+import json
 
 def main() -> None:
-    DEBUG_BOOL: bool = False
+    DEBUG_BOOL: bool = True
     testBool: bool = False                                      # Set True with `--test` flag
 
     args = sys.argv
@@ -71,10 +73,16 @@ def main() -> None:
                     print(f"Error: {e}", file=sys.stderr)
             print_help("gill sysprompt")
             sys.exit(1)
-        case "chat": # TODO: commands for new chat, switching chat, deleting chat, listing, showing
+        case "chat"| "chats": # TODO: commands for new chat, switching chat, deleting chat, listing, showing
             args = args[1:]                                     # Cut out `chat` command
-            if len(args) == 1 and args[0] == "delete":
-                
+            if len(args) == 1:
+                try:
+                    gill_chat(args)
+                    return
+                except Exception as e:
+                    print(f"Error: {e}", file=sys.stderr)
+            print_help("gill_chat")
+            sys.exit(1)
         case "--test" | "-t":
             testBool = True
             args = args[1:]
@@ -91,33 +99,29 @@ def main() -> None:
         sys.exit(1)
 
     # If testing, just print
-    if testBool or DEBUG_BOOL:
+    if testBool:
         print(prompt)
         return
     
-    # Check for chat head
-    cwd = os.getcwd()
-    config_path = os.path.join(cwd, ".gill", "config.toml")
-    if os.path.exists(config_path):
-        config = load_config(config_path)
-        chats = config.get("chats")
-        if chats:
-            head = chats.get("head")
-        else:
-            # No chats in config, so create a chat file and make it head
-            chats_path = os.path.join(cwd, ".gill", "chats")
-            if not (os.path.exists(chats_path) and os.path.isdir(chats_path)):
-                os.makedirs(chats_path)
-            # TODO: create chat file that's not already there
-            # TODO: make head, add to config
-            head = "Not none"
+    # Check for chat head, 
+    # this also creates a new head, with the current sysprompt,
+    # if configs exist but head does not.
+    head = head_chat()
+    if head:
+        full_path = os.path.join(get_chat_path(), head)
+        with open(full_path, "r", encoding="utf-8") as f:
+            messages = json.load(f)  # Type Any!
     else:
-        head = None
+        messages = [{"role": "developer", "content": ""},]
+    
+    messages.append({"role" : "user", "content" : prompt})
 
     # Get streaming response
     try:
         result = ""
-        cc_stream = ask_openai(prompt)                # Call OpenAI API function
+        if DEBUG_BOOL:
+            print("Messages to API: \n", messages)
+        cc_stream = ask_openai(DEBUG_BOOL, messages)                # Call OpenAI API function
         for event in cc_stream:
             # Only accumulate the text deltas
             content_delta = event.choices[0].delta.content
@@ -130,9 +134,8 @@ def main() -> None:
         print(f"OpenAI API error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    if head:
-        # TODO: Add result to file
-        print(result)
+    #if head:
+        # TODO: Add to chat head file
 
 if __name__ == "__main__":
     main()

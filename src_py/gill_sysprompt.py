@@ -14,12 +14,25 @@
 
 import os
 import sys
+import re
+
+def get_sysprompt_path() -> str:
+    cwd = os.getcwd()
+    config_path = os.path.join(cwd, ".gill", "sysprompt")
+    return config_path
+
+def sanitize_prompt(prompt: str):
+    # Remove trailing newlines, spaces, or carriage returns for request
+    prompt = prompt.rstrip('\n\r ')
+    # Remove unwanted control chars except \n and tabs if you want:
+    prompt = re.sub(r'[\x00-\x08\x0B-\x0C\x0E-\x1F]', '', prompt)
+    return prompt
 
 def gill_sysprompt() -> None:
     cwd = os.getcwd()
     dir_name = ".gill"
-    gill_path = os.path.join(cwd, dir_name)
-    sysprompt_path = os.path.join(gill_path, "sysprompt")
+    gill_path = os.path.join(cwd, ".gill")
+    sysprompt_path = get_sysprompt_path()
 
     if os.path.exists(gill_path):
         if os.path.isdir(gill_path):

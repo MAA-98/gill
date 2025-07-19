@@ -1,3 +1,5 @@
-
 [llm]
 model = "gpt-4.1-mini"
+
+[chats]
+head = "0fbf8c2a3c78413ebb0a74f622e0672a.chat"

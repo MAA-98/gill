@@ -13,43 +13,30 @@
 # limitations under the License.
 
 from openai import OpenAI
-from openai.types.chat import ChatCompletionChunk
+from openai.types.chat import ChatCompletionChunk, ChatCompletionMessageParam
 
-from typing import Iterator
-import os
-import re
+from typing import Iterator, cast, Any
 
-from gill_config import load_config
+from gill_config import get_config_path, load_toml
 
 client = OpenAI()
 
 # See general docs at: https://platform.openai.com/docs/guides/
 # For streaming CC: https://platform.openai.com/docs/api-reference/chat-streaming
 
-def ask_openai(prompt: str) -> Iterator[ChatCompletionChunk]:
-    cwd = os.getcwd()
-    dir_name = ".gill"
-    gill_path = os.path.join(cwd, dir_name)
-    sysprompt_path = os.path.join(gill_path, "sysprompt")
-    config_path = os.path.join(gill_path, "config.toml")
-    config = load_config(config_path)
-    model = config["llm"]["model"]
+def ask_openai(debug: bool, raw_messages: Any) -> Iterator[ChatCompletionChunk]:
+    config_path = get_config_path()
+    config = load_toml(config_path)
+    model = config["llm"]["model"] or "gpt-4.1-mini"
 
-    if os.path.isfile(sysprompt_path):
-        with open(sysprompt_path, "r", encoding="utf-8") as f:
-            sysprompt_content = f.read()
-            # Remove trailing newlines, spaces, or carriage returns for request
-            prompt = prompt.rstrip('\n\r ')
-            # Remove unwanted control chars except \n and tabs if you want:
-            prompt = re.sub(r'[\x00-\x08\x0B-\x0C\x0E-\x1F]', '', prompt)
-    else:
-        sysprompt_content = ""
+    # Cast loaded JSON to the expected OpenAI message param type
+    messages = cast(list[ChatCompletionMessageParam], raw_messages)
+
+    if debug:
+        print("Cast messages: \n", messages)
 
     return client.chat.completions.create(
         model=model,
-        messages=[
-            {"role": "developer", "content": sysprompt_content},
-            {"role": "user", "content": prompt}
-        ],
+        messages=messages,
         stream=True,
     )

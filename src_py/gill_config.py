@@ -13,10 +13,21 @@
 # limitations under the License.
 
 import os
-from typing import Any
 
 import tomllib                          # For reading
 import toml                             # For writing
+
+def load_toml(toml_path: str) -> dict[str, dict[str, str]]:
+    try:
+        with open(toml_path, "rb") as f:
+            return tomllib.load(f)
+    except Exception as e:
+        raise ConfigError(f"Failed to load TOML file'{toml_path}': {e}")
+    
+def get_config_path() -> str:
+    cwd = os.getcwd()
+    config_path = os.path.join(cwd, ".gill", "config.toml")
+    return config_path
 
 class ConfigError(Exception):
     """Custom exception for config errors."""
@@ -35,14 +46,11 @@ def gill_config(args: list[str]) -> None:
     if not args:
         raise ConfigError("No command specified. Use 'set', '--list', or a section.key to get a value.")
 
-    cwd = os.getcwd()
-    dir_name = ".gill"
-    gill_path = os.path.join(cwd, dir_name)
-    config_path = os.path.join(gill_path, "config.toml")
+    config_path = get_config_path()
 
     if not os.path.isfile(config_path):                                             # Checking config file exists
         raise ConfigError(f"No config file found at '{config_path}'. Try initializing in the working directory again.")
-    config = load_config(config_path)                                               # Load existing config as Python dict with string keys
+    config = load_toml(config_path)                                               # Load existing config as Python dict with string keys
 
     command = args[0]
 
@@ -63,7 +71,7 @@ def gill_config(args: list[str]) -> None:
         if not len(args) == 1:
             raise ConfigError("Use --list to display config values.")
         # Pretty print the entire config
-        print_config(config)
+        print_toml(config)
 
     elif len(args) == 1:
         # If neither, check is a section.key pair and show value
@@ -85,16 +93,9 @@ def gill_config(args: list[str]) -> None:
 
     return
 
-def load_config(config_path: str) -> dict[str, dict[str, str]]:
-    try:
-        with open(config_path, "rb") as f:
-            return tomllib.load(f)
-    except Exception as e:
-        raise ConfigError(f"Failed to load config file'{config_path}': {e}")
-
-def print_config(config: dict) -> None:
+def print_toml(toml_as_dict: dict) -> None:
     """Pretty-print TOML config dictionary."""
-    toml_string = toml.dumps(config).strip()
+    toml_string = toml.dumps(toml_as_dict).strip()
     print(toml_string)
 
 def update_toml_file(path: str, section: str, key: str, value: str, current_config: dict) -> None:
