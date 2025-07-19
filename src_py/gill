@@ -81,7 +81,7 @@ def main() -> None:
                     return
                 except Exception as e:
                     print(f"Error: {e}", file=sys.stderr)
-            print_help("gill_chat")
+            print_help("gill chat")
             sys.exit(1)
         case "--test" | "-t":
             testBool = True

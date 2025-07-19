@@ -89,7 +89,7 @@ def gill_config(args: list[str]) -> None:
         print(value)
 
     else:
-        raise ConfigError(f"Unknown command or incorrect arguments: {' '.join(args)}")
+        raise SyntaxError(f"Unknown command or incorrect arguments: {' '.join(args)}")
 
     return
 

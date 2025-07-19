@@ -81,5 +81,13 @@ def get_chat_path() -> str:
     return chats_path
 
 def gill_chat(args: list[str]) -> None:
-    # TODO: delete chat for now
-    return
+    if args[0] == "clear":
+        chats_dir = get_chat_path()
+        if os.path.exists(chats_dir) and os.path.isdir(chats_dir):
+                for filename in os.listdir(chats_dir):
+                    file_path = os.path.join(chats_dir, filename)
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+        return
+    else:
+        raise SyntaxError(f"Unknown command or incorrect arguments: {' '.join(args)}")
