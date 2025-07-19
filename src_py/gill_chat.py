@@ -88,6 +88,18 @@ def gill_chat(args: list[str]) -> None:
                     file_path = os.path.join(chats_dir, filename)
                     if os.path.isfile(file_path):
                         os.remove(file_path)
+
+        config_path = get_config_path()
+        if os.path.exists(config_path):
+            config = load_toml(config_path)
+            chats = config.get("chats")
+
+            if chats:
+                if "head" in chats:
+                    del chats["head"]
+                # Save updated config back to disk
+                with open(config_path, "w") as f:
+                    toml.dump(config, f)
         return
     else:
         raise SyntaxError(f"Unknown command or incorrect arguments: {' '.join(args)}")
