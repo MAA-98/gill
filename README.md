@@ -56,7 +56,7 @@ head = "7ea...827.chat"
 
 Change the model used:
 ```bash
-gill config set llm.model "gpt-4.1"
+gill config set llm.model gpt-4.1
 ```
 
 Clear the chat with:
@@ -143,11 +143,11 @@ Access the file path to the system prompt used in API calls with `gill sysprompt
 
 ### Chats
 
-Chat is automatically created with `git init` and tracked as you use. Clear the chat with a simple `gill chat clear`.
+Chat is automatically created with `git init` and tracked as you use. Clear the chat with a simple `gill chat clear`. Sending a new prompt will then use the updated `gill sysprompt` contents.
 
 ### Configs
 
-Configurations may be changed with `gill config set <section.key> value`, currently the only valid `<section.key>` is `llm.model` (and `model.head` which should not be manually changed.) Print configs with `gill config`.
+Configurations may be changed with `gill config set <section.key> value`, currently the only valid `<section.key>` is `llm.model` (and `model.head` which should not be manually changed.) Print all configs with `gill config --list` or a single value with `gill config <section.key>`.
 
 Therefore, change the OpenAI model used by the API with `gill config set llm.model gpt-4.1`, or any other OpenAI model value.
 

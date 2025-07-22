@@ -44,7 +44,7 @@ def gill_config(args: list[str]) -> None:
         See list of OpenAI models at : https://platform.openai.com/docs/models
     """
     if not args:
-        raise ConfigError("No command specified. Use 'set', '--list', or a section.key to get a value.")
+        raise ConfigError("No command specified. Use 'set', or 'list', or a section.key to get a value.")
 
     config_path = get_config_path()
 
@@ -67,9 +67,9 @@ def gill_config(args: list[str]) -> None:
         return
 
     # Displaying config values
-    elif command == "--list":
+    elif command == "--list" or "list":
         if not len(args) == 1:
-            raise ConfigError("Use --list to display config values.")
+            raise ConfigError("Use `list` to display config values.")
         # Pretty print the entire config
         print_toml(config)
 
