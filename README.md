@@ -42,7 +42,7 @@ nano $(gill sysprompt)
 - **Project-Level Configs:** Change the system prompt and the current OpenAI model used by the API:
 
 ```bash
-gill config --list
+gill config list
 ```
 
 Output:
@@ -147,7 +147,7 @@ Chat is automatically created with `git init` and tracked as you use. Clear the 
 
 ### Configs
 
-Configurations may be changed with `gill config set <section.key> value`, currently the only valid `<section.key>` is `llm.model` (and `model.head` which should not be manually changed.) Print all configs with `gill config --list` or a single value with `gill config <section.key>`.
+Configurations may be changed with `gill config set <section.key> value`, currently the only valid `<section.key>` is `llm.model` (and `model.head` which should not be manually changed.) Print all configs with `gill config list` or a single value with `gill config <section.key>`.
 
 Therefore, change the OpenAI model used by the API with `gill config set llm.model gpt-4.1`, or any other OpenAI model value.
 
