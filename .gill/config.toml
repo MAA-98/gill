@@ -2,3 +2,4 @@
 model = "gpt-4.1-mini"
 
 [chats]
+head = "2e38a525ef3142b7b67f70107768189b.chat"

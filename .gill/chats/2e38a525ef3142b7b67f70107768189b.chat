@@ -1,0 +1,14 @@
+[
+  {
+    "role": "developer",
+    "content": "This is a test prompt. If you received this as a system prompt, write your response with 'I read the system prompt.' at the end."
+  },
+  {
+    "role": "user",
+    "content": "Checking here."
+  },
+  {
+    "role": "assistant",
+    "content": "Hello! How can I assist you today?"
+  }
+]
