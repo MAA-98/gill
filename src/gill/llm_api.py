@@ -16,8 +16,9 @@ from openai import OpenAI
 from openai.types.chat import ChatCompletionChunk, ChatCompletionMessageParam
 
 from typing import Iterator, cast, Any
+import os
 
-from gill_config import get_config_path, load_toml
+from gill.gill_config import get_config_path, load_toml
 
 client = OpenAI()
 
@@ -26,8 +27,11 @@ client = OpenAI()
 
 def ask_openai(debug: bool, raw_messages: Any) -> Iterator[ChatCompletionChunk]:
     config_path = get_config_path()
-    config = load_toml(config_path)
-    model = config["llm"]["model"] or "gpt-4.1-mini"
+    try:
+        config = load_toml(config_path)
+        model = config["llm"]["model"] or "gpt-4.1-mini"
+    except:
+        model = "gpt-4.1-mini"
 
     # Cast loaded JSON to the expected OpenAI message param type
     messages = cast(list[ChatCompletionMessageParam], raw_messages)

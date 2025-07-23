@@ -3,8 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Virtual environment directory
-venv/
+# Virtual environments
+test-env/
+src/venv/
 
 # VSCode settings folder
 .vscode/
@@ -13,7 +14,9 @@ venv/
 build/
 dist/
 *.egg-info/
+/src/gill.egg-info
 .eggs/
+setup.py.bak
 
 # Installer logs
 pip-log.txt

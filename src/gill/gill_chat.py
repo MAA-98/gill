@@ -18,8 +18,8 @@ import uuid
 import toml
 import json
 
-from gill_config import get_config_path, load_toml
-from gill_sysprompt import get_sysprompt_path, sanitize_prompt
+from gill.gill_config import get_config_path, load_toml
+from gill.gill_sysprompt import get_sysprompt_path, sanitize_prompt
 
 def head_chat() -> Optional[str]:
     """

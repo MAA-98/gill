@@ -14,14 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from help import print_help
-from gill_init import gill_init
-from aliases import aliases
-from gill_sysprompt import gill_sysprompt
-from gill_config import gill_config
-from gill_chat import gill_chat, head_chat, get_chat_path
-from prompt_parser import parse_prompt_args                     # Import the parser for prompt instructions
-from llm_api import ask_openai                                  # Import API call function
+from gill.help import print_help
+from gill.gill_init import gill_init
+from gill.aliases import aliases
+from gill.gill_sysprompt import gill_sysprompt
+from gill.gill_config import gill_config
+from gill.gill_chat import gill_chat, head_chat, get_chat_path
+from gill.prompt_parser import parse_prompt_args                     # Import the parser for prompt instructions
+from gill.llm_api import ask_openai                                  # Import API call function
 
 import sys
 import os
