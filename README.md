@@ -129,7 +129,7 @@ Line ranges for `-l` flags are always inclusive and can be specified in various 
 
 ## Advanced Usage
 
-As in `git`, initialize a gill project with `gill init` or `gill init [<directory>]`.
+As in the `git` CLI, initialize a gill project with `gill init` or `gill init [<directory>]`.
 
 ### System Prompt
 
@@ -137,7 +137,7 @@ Access the file path to the system prompt used in API calls with `gill sysprompt
 
 ### Chats
 
-Chat is automatically created with `git init` and tracked as you use. Clear the chat with a simple `gill chat clear`. Sending a new prompt will then use the updated `gill sysprompt` contents.
+Chat is automatically created with `gill init` and tracked as you use. Clear the chat with a simple `gill chat clear`. Sending a new prompt will then use the updated `gill sysprompt` contents.
 
 ### Configs
 
