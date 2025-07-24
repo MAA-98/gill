@@ -2,8 +2,8 @@ import os
 from setuptools import setup, find_packages
 
 setup(
-    name='gill',
-    version='0.1.2',
+    name='gillmore',
+    version='0.1.0',
     packages=find_packages(where='src'),
         package_dir={'':'src'},
     # Warning do not change the line below

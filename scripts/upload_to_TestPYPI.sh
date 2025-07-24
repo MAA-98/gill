@@ -8,9 +8,9 @@ else
   return 1
 fi
 
-# Check for PYPI_API_KEY after sourcing .my_secrets
-if [ -z "$PYPI_API_KEY" ]; then
-  echo "Error: PYPI_API_KEY environment variable not set. Did you forget to add it to ~/.my_secrets?"
+# Check for TESTPYPI_API_KEY after sourcing .my_secrets
+if [ -z "$TESTPYPI_API_KEY" ]; then
+  echo "Error: TESTPYPI_API_KEY environment variable not set. Did you forget to add it to ~/.my_secrets?"
   return 1
 fi
 
@@ -59,7 +59,7 @@ echo "Building the package..."
 python3 -m build
 
 echo "Uploading package to TestPyPI..."
-twine upload --repository testpypi dist/* -u __token__ -p "$PYPI_API_KEY"
+twine upload --repository testpypi dist/* -u __token__ -p "$TESTPYPI_API_KEY"
 
 # Deactivate build-env venv
 deactivate

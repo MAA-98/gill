@@ -68,32 +68,26 @@ gill chat clear
 
 ## Installation
 
-The use of the OpenAI API assumes you have a saved environment key: ```OPENAI_API_KEY```.
-
-Gill has no official package yet. To use the tool in ```bash``` or ```zsh```:
-
-1. Clone repo, install dependencies and make executable. Something like (replace ```~/path/to/your/dir/gill/src_py/gill``` with the actual full path):
+To use this tool, you need an OpenAI API key saved in the environment:
 
 ```bash
-cd ~/path/to/your/dir/
-git clone https://github.com/MAA-98/gill.git
-cd gill
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-chmod +x src_py/gill # May require sudo
+export OPENAI_API_KEY="sk-...your_key_here..."
+echo $OPENAI_API_KEY
+```
+ On Windows Powershell:
+
+```powershell
+$env:OPENAI_API_KEY = "sk-...your_key_here..."
 ```
 
-2. Add alias to your ```.bashrc``` or ```.zshrc```: open file and add the lines:
+The official package, `gillmore`, is available on [PyPI](https://pypi.org/project/gillmore/).
+
+Use `pipx` for a global CLI install without interfering with system Python:
 
 ```bash
-alias gill='~/path/to/your/dir/gill/src_py/gill'
-```
-
-Save, exit, and reload configuration:
-
-```bash
-source ~/.zshrc
+pipx install gillmore
+pipx ensurepath # Ensures the gill command is in the path
+gill --test -m "Hello world!" # You may need to restart your shell for the command to work
 ```
 
 ---
@@ -222,9 +216,10 @@ This, too:
 ## Contributions
 
 Planned features, ordered by priority:
+- Tests
 - More chat commands
-- Insert webpage contents by URL
-- Completions with Tab
+- Insert scraped webpage contents by URL
+- Completions
 
 ## License
 
